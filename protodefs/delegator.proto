@@ -1,0 +1,101 @@
+/**
+ * Description: Describes the messages that can be sent between remote clients
+ * and the Pluto delegator. 
+ * This file also describes the delegator service which represents all active 
+ * PlutoComponent objects allowing remote clients to remotely interact with
+ * the components
+ */
+
+
+syntax = "proto3";
+
+/* import "google/protobuf/any.proto"; */
+
+
+/* List components request */
+message ListComponentsRequest
+{
+}
+
+/* List components response, returns a list of active PlutoComponents */
+message ListComponentsResponse
+{
+    repeated string components = 1;
+}
+
+message ListMethodsRequest
+{
+    string component = 1;
+}
+
+message ListMethodsResponse
+{
+    repeated string methods = 1;
+}
+
+message ListVariablesRequest
+{
+    string component = 1;
+}
+
+message ListVariablesResponse
+{
+    repeated string variables = 1;
+}
+
+message CallMethodRequest
+{
+    string component = 1;
+    string method = 2;
+    /* args is a list of json encoded strings */
+    repeated string args = 3;
+}
+
+message CallMethodResponse
+{
+    /* repeated google.protobuf.Any result = 1; */
+    /* result will be json encoded */
+    string result = 1;
+}
+
+message SetVariableRequest
+{
+    string component = 1;
+    string variable = 2;
+    /* value is json encoded */
+    string value = 3;
+}
+
+message SetVariableResponse
+{
+}
+
+message GetVariableRequest
+{
+    string component = 1;
+    string variable = 2;
+}
+
+message GetVariableResponse
+{
+    /* value is json encoded */
+    string value = 1;
+}
+
+/* Defines the RPC methods offered by the Pluto delegator
+ */
+service PlutoDelegator 
+{
+    /* Allow a client to query which components are actively running */
+    rpc list_components(ListComponentsRequest) returns(ListComponentsResponse) {}
+
+    rpc list_methods(ListMethodsRequest) returns(ListMethodsResponse) {}
+
+    rpc list_variables(ListVariablesRequest) returns(ListVariablesResponse) {}
+
+    rpc call_method(CallMethodRequest) returns(CallMethodResponse) {}
+
+    rpc set_variable(SetVariableRequest) returns(SetVariableResponse) {}
+
+    rpc get_variable(GetVariableRequest) returns(GetVariableResponse) {}
+}

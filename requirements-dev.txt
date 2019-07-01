@@ -1,0 +1,6 @@
+# bring in requirements from distribution
+-r requirements.txt
+
+# and more requirements for building/testing
+grpcio-tools
+pytest
