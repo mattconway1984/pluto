@@ -1,10 +1,11 @@
 #pylint:disable=missing-docstring
-#pylint:disable=enable-docstring
+#pylint:enable=missing-docstring
 
 from logging import getLogger, StreamHandler
 from logging.handlers import RotatingFileHandler
 
 from pluto.component.component import PlutoComponent
+from pluto.logger.configure import MyFormatter
 
 
 # The name of the loggers log method (exposed on the system aggregator)
@@ -15,6 +16,10 @@ ROTATE_LOG_BYTES = 100
 
 # Max depth of log files (i.e. only store the last n rotated log files)
 ROTATE_LOG_MAX_DEPTH = 5
+
+# Default log format for logs emitted:
+DEFAULT_FORMAT = "[%(asctime)s] %(name)-10s %(levelname)-5s: %(message)s"
+DEFAULT_DATEFMT = "%Y-%m-%d %H:%M:%S"
 
 
 class PlutoLogger(PlutoComponent):
@@ -85,9 +90,14 @@ class PlutoLogger(PlutoComponent):
         The "broadcast logger" will set the component variable @log_message
         which will cause log entries to be broadcasted.
         """
-        log_emitter = __class__.LogEmitter(
+        log_emitter = type(self).LogEmitter(
             lambda message: setattr(self, "log_message", message))
-        log_emitter.setFormatter(self._root_logger.handlers[0].formatter)
+        log_emitter.setFormatter(
+            MyFormatter(
+                colorise=False,
+                fmt=DEFAULT_FORMAT,
+                datefmt=DEFAULT_DATEFMT))
+
         return log_emitter
 
     def _create_log_rotator(self, path):

@@ -27,7 +27,7 @@ class PlutoApplication:
         if not isinstance(config, PlutoApplicationConfig):
             raise RuntimeError(
                 f"{config} is not an instance of PlutoApplicationConfig")
-        configure_logger(config.log_level)
+        configure_logger(level=config.log_level)
         self._eventbus = PlutoEventBus()
         self._eventbus.register(self)
         self._stop_running = Event()
